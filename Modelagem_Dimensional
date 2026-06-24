@@ -1,0 +1,205 @@
+# Modelagem Dimensional
+
+## Visão Geral
+
+O Data Warehouse foi desenvolvido utilizando a abordagem dimensional proposta por Ralph Kimball, adotando a arquitetura **Star Schema (Esquema Estrela)**. Essa abordagem favorece consultas analíticas de alto desempenho, simplifica a compreensão do modelo de dados e facilita a elaboração de relatórios gerenciais.
+
+O processo de negócio modelado corresponde ao registro das vendas realizadas por uma empresa varejista, permitindo análises sob diferentes perspectivas, como clientes, produtos, localização geográfica e tempo.
+
+---
+
+# Tabela Fato
+
+## FATO_VENDAS
+
+A tabela fato concentra as métricas quantitativas utilizadas nas análises.
+
+### Medidas
+
+* Valor da Venda
+* Quantidade
+* Desconto
+* Lucro
+
+### Chaves Estrangeiras
+
+* id_cliente
+* id_produto
+* id_local
+* id_tempo
+
+### Dimensão Degenerada
+
+* numero_pedido
+
+O número do pedido é mantido diretamente na tabela fato por representar um identificador operacional sem necessidade de atributos adicionais.
+
+---
+
+# Dimensão Cliente
+
+## DIM_CLIENTE
+
+### Atributos
+
+* id_cliente
+* nome_cliente
+* segmento
+
+Objetivo:
+
+Permitir análises por perfil de cliente.
+
+---
+
+# Dimensão Produto
+
+## DIM_PRODUTO
+
+### Atributos
+
+* id_produto
+* nome_produto
+* categoria
+* subcategoria
+
+Objetivo:
+
+Analisar o desempenho dos produtos comercializados.
+
+---
+
+# Dimensão Local
+
+## DIM_LOCAL
+
+### Atributos
+
+* id_local
+* cidade
+* estado
+* regiao
+
+Objetivo:
+
+Realizar análises geográficas das vendas.
+
+---
+
+# Dimensão Tempo
+
+## DIM_TEMPO
+
+### Atributos
+
+* id_tempo
+* data
+* dia
+* mes
+* nome_mes
+* trimestre
+* ano
+* dia_semana
+
+Objetivo:
+
+Permitir análises temporais, comparações mensais, trimestrais e anuais.
+
+---
+
+# Star Schema
+
+```
+                    DIM_CLIENTE
+                         │
+                         │
+DIM_PRODUTO ───── FATO_VENDAS ───── DIM_LOCAL
+                         │
+                         │
+                    DIM_TEMPO
+```
+
+---
+
+# Granularidade
+
+A granularidade da tabela fato corresponde a **uma venda individual**, identificada pelo número do pedido e pelo produto comercializado.
+
+Cada registro representa um item vendido em uma determinada data para um cliente específico.
+
+---
+
+# Medidas
+
+| Medida      | Tipo  |
+| ----------- | ----- |
+| valor_venda | Soma  |
+| quantidade  | Soma  |
+| desconto    | Média |
+| lucro       | Soma  |
+
+---
+
+# Hierarquias
+
+## Tempo
+
+Ano
+
+↓
+
+Trimestre
+
+↓
+
+Mês
+
+↓
+
+Dia
+
+---
+
+## Produto
+
+Categoria
+
+↓
+
+Subcategoria
+
+↓
+
+Produto
+
+---
+
+## Localização
+
+Região
+
+↓
+
+Estado
+
+↓
+
+Cidade
+
+---
+
+# Tipo de Modelo
+
+Modelo Dimensional
+
+Arquitetura:
+
+**Star Schema**
+
+---
+
+# Justificativa
+
+A utilização do Star Schema reduz a complexidade das consultas analíticas, melhora o desempenho das agregações e facilita a integração com ferramentas de Business Intelligence e Machine Learning.
+
+Além disso, a utilização de uma Dimensão Degenerada atende aos requisitos do projeto, preservando a rastreabilidade dos pedidos sem aumentar a complexidade do modelo dimensional.
